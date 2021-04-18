@@ -1,0 +1,746 @@
+package lab;
+
+/* Define an interface called ChessPiece which defines the prototype for the method move().
+ * Create the specific classes for each of the chess pieces and implement the move() method
+ *according to the rules of movement on the chess board.
+ * The method takes as input the chess piece’s current location and the direction of the
+ *move given by the geographical coordinates (N, S, E, V, NE, NV, SE, SV), and returns 
+ *the final position of the piece.
+ * Pay attention to the pieces which can move a different number of cells!!
+ * 
+ *Name:Joldes George
+ *Data:30.03.2020
+*/
+
+import java.util.Scanner;
+import java.io.IOException;
+import java.util.Arrays;
+
+@SuppressWarnings("unused")
+
+class table
+{
+	char t[][];
+	
+	int p[][]= {{-1,-2,-3,-4,-5,-3,-2,-1},
+		        {-6,-6,-6,-6,-6,-6,-6,-6},
+		        {0,0,0,0,0,0,0,0},
+		        {0,0,0,0,0,0,0,0},
+		        {0,0,0,0,0,0,0,0},
+		        {0,0,0,0,0,0,0,0},
+		        {6,6,6,6,6,6,6,6},
+		        {1,2,3,4,5,3,2,1}};
+	
+	table()
+	{
+		t=new char[8][8];
+	}
+	
+	void display()
+	{
+		for(int i=0;i<8;i++)
+			System.out.print("___");
+		System.out.print("\n");
+		
+		for(int i=0;i<8;i++)
+		{
+			for(int j=0;j<8;j++)
+			{
+
+				switch(p[i][j])
+				{
+				
+				case 6:		
+				    System.out.print("|P");
+				    System.out.print("_");
+				    break;
+				    
+				case -6:		
+				    System.out.print("|p");
+				    System.out.print("_");
+				    break;
+				    
+				case 1:		
+				    System.out.print("|R");
+				    System.out.print("_");
+				    break;
+				    
+				case -1:		
+				    System.out.print("|r");
+				    System.out.print("_");
+				    break;
+				    
+				case 2:		
+				    System.out.print("|N");
+				    System.out.print("_");
+				    break;
+				    
+				case -2:		
+				    System.out.print("|n");
+				    System.out.print("_");
+				    break;
+				    
+				case 3:		
+				    System.out.print("|B");
+				    System.out.print("_");
+				    break;
+				    
+				case -3:		
+				    System.out.print("|b");
+				    System.out.print("_");
+				    break;
+				    
+				case 4:		
+				    System.out.print("|Q");
+				    System.out.print("_");
+				    break;
+				    
+				case -4:		
+				    System.out.print("|q");
+				    System.out.print("_");
+				    break;
+				    
+				case 5:		
+				    System.out.print("|K");
+				    System.out.print("_");
+				    break;
+				    
+				case -5:		
+				    System.out.print("|k");
+				    System.out.print("_");
+				    break;
+				    
+				case 0:		
+				    System.out.print("|");
+				    System.out.print("__");
+				    break;
+				}
+				
+		    }
+				
+			System.out.print("|\n");
+		    
+	    }
+     }
+}
+
+interface ChessPieces
+{
+	int move(int p[][],int i,int j,String s);
+}
+
+class pawn implements ChessPieces
+{
+	@Override public int move(int p[][],int i,int j,String s)
+	{	
+		int r=1;
+		
+		switch(s)
+		{
+		
+		case "N":
+			if(p[i-1][j]==0)
+			{
+				p[i][j]=0;
+				p[i-1][j]=6;
+			}
+			break;
+			
+		case "NV":
+			if(p[i-1][j-1]<0)
+			{
+				p[i][j]=0;
+				p[i-1][j-1]=6;
+			}
+			break;
+			
+		case "NE":
+			if(p[i-1][j+1]<0)
+			{
+				p[i][j]=0;
+				p[i-1][j+1]=6;
+			}
+			break;
+		
+		default:
+			r=0;
+			break;			
+		
+		}
+		
+		return r;
+	}
+}
+
+class rook implements ChessPieces
+{
+	@Override public int move(int p[][],int i,int j,String s)
+	{
+		int r=1;
+		
+		switch(s.charAt(0))
+		{
+		
+		case 'N':
+			for(int k=i-1;k>i-Character.getNumericValue(s.charAt(1));k--)
+				if(p[k][j]!=0)
+					r=0;
+				if(r==1)
+					if(p[i-Character.getNumericValue(s.charAt(1))][j]<=0)
+					{
+						p[i][j]=0;
+						p[i-Character.getNumericValue(s.charAt(1))][j]=1;
+					}
+					else
+						r=0;
+			break;
+			
+		case 'S':
+			for(int k=i+1;k<i+Character.getNumericValue(s.charAt(1));k++)
+				if(p[k][j]!=0)
+					r=0;
+				if(r==1)
+					if(p[i+Character.getNumericValue(s.charAt(1))][j]<=0)
+					{
+						p[i][j]=0;
+						p[i+Character.getNumericValue(s.charAt(1))][j]=1;
+					}
+					else
+						r=0;
+			break;
+			
+		case 'E':
+			for(int k=j+1;k<j+Character.getNumericValue(s.charAt(1));k++)
+				if(p[i][k]!=0)
+					r=0;
+				if(r==1)
+					if(p[i][j+Character.getNumericValue(s.charAt(1))]<=0)
+					{
+						p[i][j]=0;
+						p[i][j+Character.getNumericValue(s.charAt(1))]=1;
+					}
+					else
+						r=0;
+			break;
+			
+		case 'V':
+			for(int k=j-1;k>j-Character.getNumericValue(s.charAt(1));k--)
+				if(p[i][k]!=0)
+					r=0;
+				if(r==1)
+					if(p[i][j-Character.getNumericValue(s.charAt(1))]<=0)
+					{
+						p[i][j]=0;
+						p[i][j-Character.getNumericValue(s.charAt(1))]=1;
+					}
+					else
+						r=0;
+			break;
+		
+		default:
+			r=0;
+			break;
+		
+		}
+		
+		return r;
+	}
+}
+
+class knight implements ChessPieces
+{
+	@Override public int move(int p[][],int i,int j,String s)
+	{
+		int r=1;
+		
+		switch(s.substring(0,2))
+		{
+		case "NV":
+			if(Character.getNumericValue(s.charAt(2))==1)
+			{
+				if(p[i-1][j-2]<=0)
+				{
+					p[i][j]=0;
+					p[i-1][j-2]=2;
+				}
+			}
+			else
+				if(Character.getNumericValue(s.charAt(2))==2)
+					if(p[i-2][j-1]<=0)
+					{
+						p[i][j]=0;
+						p[i-2][j-1]=2;
+					}	
+			break;
+			
+		case "NE":
+			if(Character.getNumericValue(s.charAt(2))==1)
+			{
+				if(p[i-1][j+2]<=0)
+				{
+					p[i][j]=0;
+					p[i-1][j+2]=2;
+				}
+			}
+			else
+				if(Character.getNumericValue(s.charAt(2))==2)
+					if(p[i-2][j+1]<=0)
+					{
+						p[i][j]=0;
+						p[i-2][j+1]=2;
+					}
+			break;
+			
+		case "SV":
+			if(Character.getNumericValue(s.charAt(2))==1)
+			{
+				if(p[i+1][j-2]<=0)
+				{
+					p[i][j]=0;
+					p[i+1][j-2]=2;
+				}
+			}
+			else
+				if(Character.getNumericValue(s.charAt(2))==2)
+					if(p[i+2][j-1]<=0)
+					{
+						p[i][j]=0;
+						p[i+2][j-1]=2;
+					}
+			break;
+			
+		case "SE":
+			if(Character.getNumericValue(s.charAt(2))==1)
+			{
+				if(p[i+1][j+2]<=0)
+				{
+					p[i][j]=0;
+					p[i+1][j+2]=2;
+				}
+			}
+			else
+				if(Character.getNumericValue(s.charAt(2))==2)
+					if(p[i+2][j+1]<=0)
+					{
+						p[i][j]=0;
+						p[i+2][j+1]=2;
+					}	
+			break;
+		
+		default:
+			r=0;
+			break;
+		}
+		
+		return r;	
+	}
+}
+
+class bishop implements ChessPieces
+{
+	@Override public int move(int p[][],int i,int j,String s)
+	{
+		int r=1;
+		
+		switch(s.substring(0,2))
+		{
+		case "NV":
+			for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+				if(p[i-k][j-k]!=0)
+					r=0;
+			if(r==1)
+				if(p[i-Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]<=0)
+				{
+					p[i][j]=0;
+					p[i-Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]=3;
+				}
+				else
+					r=0;
+			break;
+			
+		case "NE":
+			for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+				if(p[i-k][j+k]!=0)
+					r=0;
+			if(r==1)
+				if(p[i-Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]<=0)
+				{
+					p[i][j]=0;
+					p[i-Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]=3;
+				}
+				else
+					r=0;
+			break;
+			
+		case "SV":
+			for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+				if(p[i+k][j-k]!=0)
+					r=0;
+			if(r==1)
+				if(p[i+Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]<=0)
+				{
+					p[i][j]=0;
+					p[i+Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]=3;
+				}
+				else
+					r=0;
+			break;
+			
+		case "SE":
+			for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+				if(p[i+k][j+k]!=0)
+					r=0;
+			if(r==1)
+				if(p[i+Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]<=0)
+				{
+					p[i][j]=0;
+					p[i+Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]=3;
+				}
+				else
+					r=0;
+			break;
+		
+		default:
+			r=0;
+			break;
+		}
+		
+		return r;	
+	}
+}
+
+class queen implements ChessPieces
+{
+	@Override public int move(int p[][],int i,int j,String s)
+	{
+		int r=1;
+		
+		if(s.charAt(1)>=49&&s.charAt(1)<=55)
+		{
+			switch(s.charAt(0))
+			{
+			
+			case 'N':
+				for(int k=i-1;k>i-Character.getNumericValue(s.charAt(1));k--)
+					if(p[k][j]!=0)
+						r=0;
+					if(r==1)
+						if(p[i-Character.getNumericValue(s.charAt(1))][j]<=0)
+						{
+							p[i][j]=0;
+							p[i-Character.getNumericValue(s.charAt(1))][j]=4;
+						}
+						else
+							r=0;
+				break;
+				
+			case 'S':
+				for(int k=i+1;k<i+Character.getNumericValue(s.charAt(1));k++)
+					if(p[k][j]!=0)
+						r=0;
+					if(r==1)
+						if(p[i+Character.getNumericValue(s.charAt(1))][j]<=0)
+						{
+							p[i][j]=0;
+							p[i+Character.getNumericValue(s.charAt(1))][j]=4;
+						}
+						else
+							r=0;
+				break;
+				
+			case 'E':
+				for(int k=j+1;k<j+Character.getNumericValue(s.charAt(1));k++)
+					if(p[i][k]!=0)
+						r=0;
+					if(r==1)
+						if(p[i][j+Character.getNumericValue(s.charAt(1))]<=0)
+						{
+							p[i][j]=0;
+							p[i][j+Character.getNumericValue(s.charAt(1))]=4;
+						}
+						else
+							r=0;
+				break;
+				
+			case 'V':
+				for(int k=j-1;k>j-Character.getNumericValue(s.charAt(1));k--)
+					if(p[i][k]!=0)
+						r=0;
+					if(r==1)
+						if(p[i][j-Character.getNumericValue(s.charAt(1))]<=0)
+						{
+							p[i][j]=0;
+							p[i][j-Character.getNumericValue(s.charAt(1))]=4;
+						}
+						else
+							r=0;
+				break;
+			
+			default:
+				r=0;
+				break;
+			
+			}
+		}
+		else
+		{
+			switch(s.substring(0,2))
+			{
+			case "NV":
+				for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+					if(p[i-k][j-k]!=0)
+						r=0;
+				if(r==1)
+					if(p[i-Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]<=0)
+					{
+						p[i][j]=0;
+						p[i-Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]=4;
+					}
+					else
+						r=0;
+				break;
+				
+			case "NE":
+				for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+					if(p[i-k][j+k]!=0)
+						r=0;
+				if(r==1)
+					if(p[i-Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]<=0)
+					{
+						p[i][j]=0;
+						p[i-Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]=4;
+					}
+					else
+						r=0;
+				break;
+				
+			case "SV":
+				for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+					if(p[i+k][j-k]!=0)
+						r=0;
+				if(r==1)
+					if(p[i+Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]<=0)
+					{
+						p[i][j]=0;
+						p[i+Character.getNumericValue(s.charAt(2))][j-Character.getNumericValue(s.charAt(2))]=4;
+					}
+					else
+						r=0;
+				break;
+				
+			case "SE":
+				for(int k=1;k<Character.getNumericValue(s.charAt(2));k++)
+					if(p[i+k][j+k]!=0)
+						r=0;
+				if(r==1)
+					if(p[i+Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]<=0)
+					{
+						p[i][j]=0;
+						p[i+Character.getNumericValue(s.charAt(2))][j+Character.getNumericValue(s.charAt(2))]=4;
+					}
+					else
+						r=0;
+				break;
+			
+			default:
+				r=0;
+				break;
+			}
+		}
+		
+		return r;	
+	}
+}
+
+class king implements ChessPieces
+{
+	@Override public int move(int p[][],int i,int j,String s)
+	{
+		int r=1;
+		
+		if(s.length()==2)
+		{
+			switch(s)
+			{
+			case "NV":
+				if(p[i-1][j-1]<=0)
+				{
+					p[i][j]=0;
+					p[i-1][j-1]=5;
+				}
+				break;
+				
+			case "NE":
+				if(p[i-1][j+1]<=0)
+				{
+					p[i][j]=0;
+					p[i-1][j+1]=5;
+				}
+				break;
+				
+			case "SV":
+				if(p[i+1][j-1]<=0)
+				{
+					p[i][j]=0;
+					p[i+1][j-1]=5;
+				}
+				break;
+				
+			case "SE":
+				if(p[i+1][j+1]<=0)
+				{
+					p[i][j]=0;
+					p[i+1][j+1]=5;
+				}
+				break;
+			
+			default:
+				r=0;
+				break;
+			}
+		}
+		else
+		{
+			switch(s)
+			{
+			case "N":
+				if(p[i-1][j]<=0)
+				{
+					p[i][j]=0;
+					p[i-1][j]=5;
+				}
+				break;
+				
+			case "S":
+				if(p[i+1][j]<=0)
+				{
+					p[i][j]=0;
+					p[i+1][j]=5;
+				}
+				break;
+				
+			case "V":
+				if(p[i][j-1]<=0)
+				{
+					p[i][j]=0;
+					p[i][j-1]=5;
+				}
+				break;
+				
+			case "E":
+				if(p[i][j+1]<=0)
+				{
+					p[i][j]=0;
+					p[i][j+1]=5;
+				}
+				break;
+			
+			default:
+				r=0;
+				break;
+			}
+		}
+		
+		return r;
+	}
+}
+
+class game extends table
+{
+	pawn ob2;
+	rook ob3;
+	knight ob4;
+	bishop ob5;
+	queen ob6;
+	king ob7;
+	int end_game;
+	
+	game()
+	{
+		ob2=new pawn();
+		ob3=new rook();
+		ob4=new knight();
+		ob5=new bishop();
+		ob6=new queen();
+		ob7=new king();
+		end_game=1;
+	}
+	
+	int move(int i,int j,String s)
+	{
+		int r=1;
+		
+		switch(p[i][j])
+		{
+		
+		case 6:
+			if(ob2.move(this.p,i,j,s)==0)
+				r=0;
+			break;
+			
+		case 1:
+			if(ob3.move(this.p,i,j,s)==0)
+				r=0;
+			break;
+			
+		case 2:
+			if(ob4.move(this.p,i,j,s)==0)
+				r=0;
+			break;
+			
+		case 3:
+			if(ob5.move(this.p,i,j,s)==0)
+				r=0;
+			break;
+			
+		case 4:
+			if(ob6.move(this.p,i,j,s)==0)
+				r=0;
+			break;
+			
+		case 5:
+			if(ob7.move(this.p,i,j,s)==0)
+				r=0;
+			break;
+			
+		default:
+			r=0;
+			break;
+			
+		}
+		
+		return r;
+	}
+}
+
+public class laborator
+{
+	
+	private static Scanner in=new Scanner(System.in);
+	
+	static public void main(String args[])
+	{
+		game ob1=new game();
+		int i,j;
+		String s=new String();
+		ob1.display();
+		
+		while(ob1.end_game==1)
+		{
+			System.out.print("\nwhite's move:\n");
+			System.out.print("i:");
+			i=in.nextInt();
+			System.out.print("j:");
+			j=in.nextInt();
+			System.out.print("diraction:");
+			s=in.next();
+			if(ob1.move(i,j,s)==1)
+			{
+				System.out.print("\n\n\n");
+				ob1.display();
+			}
+			else
+				System.out.print("Invalid move!");
+		}
+	}
+}
